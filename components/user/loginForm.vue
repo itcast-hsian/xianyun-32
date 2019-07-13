@@ -63,14 +63,11 @@ export default {
            
             this.$refs.form.validate(valid => {
                 if(valid){
-                    this.$axios({
-                        url: "/accounts/login",
-                        data: this.form,
-                        method: "POST"
-                    }).then(res => {
-                        // 1.保存到vuex
-                        this.$store.commit("user/setUserInfo", res.data);
-                    })
+                    // 调用actions的方法进行登录,
+                    // dispatch调用actions下方法
+                    this.$store.dispatch("user/login", this.form).then(res => {
+                        this.$router.push("/")
+                    });
                 }
             })
 
