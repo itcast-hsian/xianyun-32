@@ -20,14 +20,14 @@
 
         <!-- 右侧的登录注册 -->
         <div>
-            <div >
+            <div v-if="false">
                 <nuxt-link to="/user/login">登录注册</nuxt-link>
             </div>
-            <div v-if="false">
+            <div>
                 <el-dropdown>
                     <span class="el-dropdown-link">
                         <img src="http://157.122.54.189:9095/assets/images/avatar.jpg" alt="">
-                        银河发动机    
+                        {{ $store.state.user.userInfo.user.username }}    
                         <i class="el-icon-arrow-down el-icon--right"></i>    
                     </span>
                     <el-dropdown-menu slot="dropdown">
@@ -47,7 +47,9 @@
 
 <script>
 export default {
-    
+    mounted(){
+        //console.log( this.$store.state.post.list )
+    }
 }
 </script>
 

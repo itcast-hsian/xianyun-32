@@ -68,9 +68,8 @@ export default {
                         data: this.form,
                         method: "POST"
                     }).then(res => {
-                       // 1.保存到vuex
-
-                       // 2. 
+                        // 1.保存到vuex
+                        this.$store.commit("user/setUserInfo", res.data);
                     })
                 }
             })
