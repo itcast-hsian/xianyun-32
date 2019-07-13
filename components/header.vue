@@ -20,13 +20,14 @@
 
         <!-- 右侧的登录注册 -->
         <div>
-            <div v-if="false">
+            <div v-if="!$store.state.user.userInfo.token">
                 <nuxt-link to="/user/login">登录注册</nuxt-link>
             </div>
-            <div>
+            <div v-else>
                 <el-dropdown>
                     <span class="el-dropdown-link">
-                        <img src="http://157.122.54.189:9095/assets/images/avatar.jpg" alt="">
+                        <!-- 头像 -->
+                        <img :src="$axios.defaults.baseURL  + $store.state.user.userInfo.user.defaultAvatar" alt="">
                         {{ $store.state.user.userInfo.user.username }}    
                         <i class="el-icon-arrow-down el-icon--right"></i>    
                     </span>
@@ -34,7 +35,7 @@
                         <el-dropdown-item>
                             个人中心
                         </el-dropdown-item>
-                        <el-dropdown-item>
+                        <el-dropdown-item @click.native="handeLogout">
                             退出
                         </el-dropdown-item>
                     </el-dropdown-menu>
@@ -49,6 +50,14 @@
 export default {
     mounted(){
         //console.log( this.$store.state.post.list )
+    },
+
+    methods: {
+        // 退出
+        handeLogout(){
+            // 清空本地的用户数据
+            this.$store.commit("user/clearUserInfo");
+        }
     }
 }
 </script>
