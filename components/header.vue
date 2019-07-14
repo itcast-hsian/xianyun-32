@@ -28,7 +28,7 @@
                     <span class="el-dropdown-link">
                         <!-- 头像 -->
                         <img :src="$axios.defaults.baseURL  + $store.state.user.userInfo.user.defaultAvatar" alt="">
-                        {{ $store.state.user.userInfo.user.username }}    
+                        {{ $store.state.user.userInfo.user.nickname }}    
                         <i class="el-icon-arrow-down el-icon--right"></i>    
                     </span>
                     <el-dropdown-menu slot="dropdown">

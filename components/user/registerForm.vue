@@ -11,9 +11,9 @@
                 </el-input>
             </el-form-item>
 
-            <el-form-item class="form-item" prop="code">
+            <el-form-item class="form-item" prop="captcha">
                 <el-input 
-                v-model="form.code"
+                v-model="form.captcha"
                 placeholder="验证码" >
                     <template slot="append">
                         <el-button @click="handleSendCaptcha">
@@ -76,7 +76,7 @@ export default {
             // 表单数据
             form: {
                 username: "",
-                code: "",
+                captcha: "",
                 nickname: "", // 昵称
                 password: "",
                 checkPassword: ""
@@ -86,7 +86,7 @@ export default {
                 username: [
                     { required: true, message: "请输入用户名", trigger: "blur"},
                 ],
-                code: [
+                captcha: [
                     { required: true, message: "请输入验证码", trigger: "blur"},
                 ],
                 nickname: [
@@ -121,7 +121,17 @@ export default {
             }
 
             // 请求手机验证码接口
-            // this.xxx
+            // 1. this.$axios()
+
+            // 2. 
+            this.$store.dispatch("user/sendCode", phoneNumber).then(res => {
+
+                this.$confirm(`当前验证码是: ${res}`, '提示', {
+                    confirmButtonText: '确定',
+                    showCancelButton: false,
+                    type: 'warning'
+                });
+            })
         },
 
 
@@ -130,7 +140,23 @@ export default {
            // console.log(this.form)
            this.$refs.form.validate(valid => {
                if(valid){
+                    // ...props表单除了checkPassword以外的其他属性
+                    const { checkPassword, ...props } = this.form;
 
+                    // 调用注册接口
+                    this.$axios({
+                        url: "/accounts/register",
+                        method: "POST",
+                        data: props
+                    }).then(res => {
+                            //console.log(res.data);
+                            // 保存到vuex
+                            this.$store.commit("user/setUserInfo", res.data);
+                            this.$router.push("/");
+                    })
+                    //    .catch(err => {
+                    //        console.log(err.response, 123)
+                    //    })
                }
            })
         }
