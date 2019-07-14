@@ -41,9 +41,10 @@
                 placeholder="请选择日期" 
                 style="width: 100%;"
                 @change="handleDate"
-                v-model="departDate">
+                v-model="form.departDate">
                 </el-date-picker>
             </el-form-item>
+
             <el-form-item label="">
                 <el-button style="width:100%;" 
                 type="primary" 
@@ -60,6 +61,9 @@
 </template>
 
 <script>
+
+import moment from "moment";
+
 export default {
     data(){
         return {
@@ -89,37 +93,93 @@ export default {
         // cb 是回调函数,
         queryDepartSearch(value, cb){
 
-            // 回调函数中的参数必须是一个数组
-            // 数组中每一项必须是一个对象，对象中必须包含value属性
-            cb([
-                // { value: 1 },
-                // { value: 2 } 
-            ])
+            // 如果是空就不发起请求
+            if(!value.trim()){
+                // 不显示下拉框
+                cb([])
+                return;
+            }
+
+            this.$axios({
+                url: "/airs/city",
+                params: {
+                    // 搜索关键字，输入框的值
+                    name: value
+                }
+            }).then(res => {
+                const {data} = res.data;
+
+                // 添加一个value属性，值等于name没有市字
+                const newData = data.map(v => {
+                    return {
+                        ...v,
+                        value: v.name.replace("市", ""), 
+                    }
+                })
+
+                // 默认选中第一个
+                this.form.departCity = newData[0].value;
+                this.form.departCode = newData[0].sort;
+
+                // 回调函数中的参数必须是一个数组
+                // 数组中每一项必须是一个对象，对象中必须包含value属性
+                cb(newData);
+            });
         },
 
         // 目标城市输入框获得焦点时触发
         // value 是选中的值，cb是回调函数，接收要展示的列表
         queryDestSearch(value, cb){
-            cb([
-                {value: 1},
-                {value: 2},
-                {value: 3},
-            ]);
+            // 如果是空就不发起请求
+            if(!value.trim()){
+                cb([])
+                return;
+            }
+
+            this.$axios({
+                url: "/airs/city",
+                params: {
+                    // 搜索关键字，输入框的值
+                    name: value
+                }
+            }).then(res => {
+                const {data} = res.data;
+
+                // 添加一个value属性，值等于name没有市字
+                const newData = data.map(v => {
+                    return {
+                        ...v,
+                        value: v.name.replace("市", ""), 
+                    }
+                });
+
+                // 默认选中第一个
+                this.form.destCity = newData[0].value;
+                this.form.destCode = newData[0].sort;
+
+                // 回调函数中的参数必须是一个数组
+                // 数组中每一项必须是一个对象，对象中必须包含value属性
+                cb(newData);
+            }) 
         },
        
         // 出发城市下拉选择时触发
         handleDepartSelect(item) {
-            
+            // 把选中对象值赋给表单
+            this.form.departCity = item.value;
+            this.form.departCode = item.sort;
         },
 
         // 目标城市下拉选择时触发
         handleDestSelect(item) {
-            
+            this.form.destCity = item.value;
+            this.form.destCode = item.sort;
         },
 
         // 确认选择日期时触发
         handleDate(value){
-           
+           // console.log(value)
+           this.form.departDate = moment(value).format("YYYY-MM-DD");
         },
 
         // 触发和目标城市切换时触发
@@ -129,7 +189,10 @@ export default {
 
         // 提交表单是触发
         handleSubmit(){
-           
+           this.$router.push({
+               path: "/air/flights",
+               query: this.form
+           })
         }
     },
     mounted() {
