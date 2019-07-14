@@ -85,7 +85,9 @@ export default {
     methods: {
         // tab切换时触发
         handleSearchTab(item, index){
-            
+            if(index === 1){
+                this.$message.warning("往返的数据库暂时没有数据")
+            }
         },
         
         // 输入文字时候触发
@@ -184,15 +186,55 @@ export default {
 
         // 触发和目标城市切换时触发
         handleReverse(){
-            
+            const { departCity,departCode, destCity, destCode } = this.form;
+
+            this.form.departCity = destCity;
+            this.form.departCode = destCode;
+
+            this.form.destCity = departCity;
+            this.form.destCode = departCode;
         },
 
         // 提交表单是触发
         handleSubmit(){
-           this.$router.push({
-               path: "/air/flights",
-               query: this.form
-           })
+
+            // if(){}else if(){} else if(){}
+
+            const rules = {
+                departCity: {
+                    value: this.form.departCity,
+                    message: "请选择出发城市"
+                },
+                destCity: {
+                    value: this.form.destCity,
+                    message: "请选择到达城市"
+                },
+                departDate: {
+                    value: this.form.departDate,
+                    message: "请选择出发日期"
+                }
+            }
+
+            // 验证结果，初始值是true
+            let valid = true;
+
+            Object.keys(rules).forEach(v => {
+                // 如果有一次验证不通过的，直接返回
+                if(!valid) return;
+
+                // 如果字段的值为空
+                if(!rules[v].value){
+                    valid = false;
+                    this.$message.warning(rules[v].message)
+                }
+            });
+
+            if(valid){
+                this.$router.push({
+                    path: "/air/flights",
+                    query: this.form
+                })
+            }
         }
     },
     mounted() {
