@@ -50,7 +50,9 @@ import FlightsItem from "@/components/air/flightsItem.vue"
 export default {
     data(){
         return {
-            flightsData: {}, // 后台返回的所有数据
+            flightsData: {
+                flights: []
+            }, // 后台返回的所有数据
             dataList: [], // 永远都是当前页数的数据
             
             pageIndex: 1, // 当前页数
@@ -63,6 +65,16 @@ export default {
         FlightsListHead,
         FlightsItem
     },
+
+    // computed: {
+    //     // 当前页面渲染的列表数据
+    //     dataList(){
+    //         return this.flightsData.flights.slice(
+    //             (this.pageIndex - 1) * this.pageSize, 
+    //             this.pageSize * this.pageIndex
+    //         );
+    //     }
+    // },
 
     mounted(){
 
