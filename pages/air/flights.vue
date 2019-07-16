@@ -15,10 +15,23 @@
                 
                 <!-- 航班信息 -->
                 <FlightsItem 
-                v-for="(item, index) in flightsData.flights"
+                v-for="(item, index) in dataList"
                 :key="index"
                 :data="item"/>
 
+                <!-- 分页布局 -->
+                <!-- size-change：切换条数时候触发 -->
+                <!-- current-change: 切换页数时候触发 -->
+                <!-- page-size: 默认一页多少条数据 -->
+                <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageIndex"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+                </el-pagination>
             </div>
 
             <!-- 侧边栏 -->
@@ -37,8 +50,12 @@ import FlightsItem from "@/components/air/flightsItem.vue"
 export default {
     data(){
         return {
-            // 后台返回的所有数据
-            flightsData: {},
+            flightsData: {}, // 后台返回的所有数据
+            dataList: [], // 永远都是当前页数的数据
+            
+            pageIndex: 1, // 当前页数
+            pageSize: 5, // 当前页面的条数
+            total: 0, // 总条数
         }
     },
 
@@ -56,7 +73,35 @@ export default {
             params: this.$route.query
         }).then(res => {
             this.flightsData = res.data;
+            // 总条数
+            this.total = this.flightsData.flights.length;
+            // 第一页的数据
+            this.dataList = this.flightsData.flights.slice(0, this.pageSize);
         })
+    },
+
+    methods: {
+        // 条数切换, value是当前选中的条数
+        handleSizeChange(value){
+            this.pageSize = value;
+            // 根据页数切割当前数据
+            this.setDataList();
+        },
+
+        // 页数的切换，value是选中的页数
+        handleCurrentChange(value){
+            this.pageIndex = value;
+            // 根据页数切割当前数据
+            this.setDataList();
+        },
+
+        setDataList(){
+            // 根据页数切割当前数据
+            this.dataList = this.flightsData.flights.slice(
+                (this.pageIndex - 1) * this.pageSize, 
+                this.pageSize * this.pageIndex
+            );
+        }
     }
 }
 </script>
