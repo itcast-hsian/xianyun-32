@@ -95,74 +95,84 @@ export default {
         // cb 是回调函数,
         queryDepartSearch(value, cb){
 
-            // 如果是空就不发起请求
-            if(!value.trim()){
-                // 不显示下拉框
-                cb([])
-                return;
-            }
-
-            this.$axios({
-                url: "/airs/city",
-                params: {
-                    // 搜索关键字，输入框的值
-                    name: value
+            this.querySearchCity(value).then( arr => {
+                if(arr.length > 0){
+                    // 设置到达城市的第一个为默认值
+                    this.form.departCity = arr[0].value;
+                    this.form.departCode = arr[0].sort;
                 }
-            }).then(res => {
-                const {data} = res.data;
 
-                // 添加一个value属性，值等于name没有市字
-                const newData = data.map(v => {
-                    return {
-                        ...v,
-                        value: v.name.replace("市", ""), 
-                    }
-                })
-
-                // 默认选中第一个
-                this.form.departCity = newData[0].value;
-                this.form.departCode = newData[0].sort;
-
-                // 回调函数中的参数必须是一个数组
-                // 数组中每一项必须是一个对象，对象中必须包含value属性
-                cb(newData);
-            });
+                // 执行回调
+                cb(arr);
+            })
         },
 
         // 目标城市输入框获得焦点时触发
         // value 是选中的值，cb是回调函数，接收要展示的列表
-        queryDestSearch(value, cb){
-            // 如果是空就不发起请求
-            if(!value.trim()){
-                cb([])
-                return;
+        async queryDestSearch(value, cb){
+
+            // await的结果是resolve的参数，也就是成功的结果
+            const arr = await this.querySearchCity(value);
+
+            if(arr.length > 0){
+                // 设置到达城市的第一个为默认值
+                this.form.destCity = arr[0].value;
+                this.form.destCode = arr[0].sort;
             }
 
-            this.$axios({
-                url: "/airs/city",
-                params: {
-                    // 搜索关键字，输入框的值
-                    name: value
+            // 执行回调
+            cb(arr);
+
+            // this.querySearchCity(value).then( arr => {
+            //     if(arr.length > 0){
+            //         // 设置到达城市的第一个为默认值
+            //         this.form.destCity = arr[0].value;
+            //         this.form.destCode = arr[0].sort;
+            //     }
+
+            //     // 执行回调
+            //     cb(arr);
+            // });
+        },
+
+        // 由于出发城市和到达城市的搜索逻辑是一样
+        // 不一样的是默认的第一个赋值操作不一样
+        querySearchCity(queryString){
+            return new Promise((resolve, reject) => {
+                // 如果是空就不发起请求
+                if(!queryString.trim()){
+                    resolve([])
+                    return;
                 }
-            }).then(res => {
-                const {data} = res.data;
 
-                // 添加一个value属性，值等于name没有市字
-                const newData = data.map(v => {
-                    return {
-                        ...v,
-                        value: v.name.replace("市", ""), 
+                this.$axios({
+                    url: "/airs/city",
+                    params: {
+                        // 搜索关键字，输入框的值
+                        name: queryString
                     }
+                }).then(res => {
+                    const {data} = res.data;
+
+                    // 添加一个value属性，值等于name没有市字
+                    const newData = data.map(v => {
+                        return {
+                            ...v,
+                            value: v.name.replace("市", ""), 
+                        }
+                    });
+
+                    // 默认选中第一个
+                    resolve(newData);
+
+                    // this.form.destCity = newData[0].value;
+                    // this.form.destCode = newData[0].sort;
+
+                    // 回调函数中的参数必须是一个数组
+                    // 数组中每一项必须是一个对象，对象中必须包含value属性
+                    cb(newData);
                 });
-
-                // 默认选中第一个
-                this.form.destCity = newData[0].value;
-                this.form.destCode = newData[0].sort;
-
-                // 回调函数中的参数必须是一个数组
-                // 数组中每一项必须是一个对象，对象中必须包含value属性
-                cb(newData);
-            }) 
+            })
         },
        
         // 出发城市下拉选择时触发

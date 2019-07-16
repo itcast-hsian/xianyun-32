@@ -7,6 +7,8 @@ export default ({ $axios }) => {
     // 拦截axios的错误请求
     $axios.onError(err => {
         // console.log(err.response.data);
+        
+        // err.response 获取返回信息
         const {message, statusCode} = err.response.data;
 
         if(statusCode === 400){

@@ -19,7 +19,7 @@
                 </el-row>
 
                 <!-- 登录功能组件 -->
-                <LoginForm v-if="currentTab == 0"/>
+                <LoginForm v-if="currentTab == 0" @click="alert(123)"/>
 
                 <!-- 注册功能组件 -->
                 <RegisterForm v-if="currentTab == 1"/>
