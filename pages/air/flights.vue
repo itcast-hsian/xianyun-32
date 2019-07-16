@@ -14,7 +14,11 @@
                 
                 
                 <!-- 航班信息 -->
-                <FlightsItem />
+                <FlightsItem 
+                v-for="(item, index) in flightsData.flights"
+                :key="index"
+                :data="item"/>
+
             </div>
 
             <!-- 侧边栏 -->
@@ -33,7 +37,8 @@ import FlightsItem from "@/components/air/flightsItem.vue"
 export default {
     data(){
         return {
-            
+            // 后台返回的所有数据
+            flightsData: {},
         }
     },
 
@@ -50,7 +55,7 @@ export default {
             method: "GET",
             params: this.$route.query
         }).then(res => {
-            const {flights} = res.data;
+            this.flightsData = res.data;
         })
     }
 }
