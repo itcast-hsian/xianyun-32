@@ -62,7 +62,7 @@
 
 <script>
 
-import moment from "moment";
+import moment, { localeData } from "moment";
 
 export default {
     data(){
@@ -170,7 +170,7 @@ export default {
 
                     // 回调函数中的参数必须是一个数组
                     // 数组中每一项必须是一个对象，对象中必须包含value属性
-                    cb(newData);
+                    //cb(newData);
                 });
             })
         },
@@ -245,6 +245,14 @@ export default {
                     query: this.form
                 })
             }
+
+            // 把搜索记录保存到本地
+            const aris = JSON.parse( localStorage.getItem("airs") || `[]`)
+
+            aris.unshift( this.form );
+
+            localStorage.setItem( 'airs',  JSON.stringify( aris ) );
+
         }
     },
     mounted() {

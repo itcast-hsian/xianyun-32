@@ -106,7 +106,7 @@ export default {
            
            const arr = this.data.flights.filter(v => {
                const [ start ] = v.dep_time.split(":");
-                return  from <= start && start < to;
+                return  from <= start &&  start < to;
             })
 
             this.$emit("changeDataList",  arr);
@@ -114,7 +114,6 @@ export default {
 
          // 选择航空公司时候触发
         handleCompany(value){
-
             const arr = this.data.flights.filter(v => {
                 return v.airline_name === value;
             })
@@ -125,12 +124,22 @@ export default {
 
          // 选择机型时候触发
         handleAirSize(value){
+           const arr = this.data.flights.filter(v => {
+                return v.plane_size === value;
+            })
            
+           //  [只包含选中的航空公司的列表数组
+           this.$emit("changeDataList",  arr);
         },
         
         // 撤销条件时候触发
         handleFiltersCancel(){
-            
+            this.airport = "";
+            this.flightTimes = "";
+            this.company = "";
+            this.airSize = "";
+
+            this.$emit("changeDataList",   this.data.flights);
         },
     }
 }
