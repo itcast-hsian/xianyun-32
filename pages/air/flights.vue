@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <FlightsFilters  :data="flightsData"/>
+        <FlightsFilters  :data="cacheFlightsData" @changeDataList="changeDataList"/>
 
         <!-- 航班头部布局 -->
         <FlightsListHead />
@@ -44,8 +44,17 @@ export default {
   data() {
     return {
       flightsData: {
-        flights: []
+        flights: [ ],
+        info: { },
+        options: {}
       }, // 后台返回的所有数据
+
+      // 缓存一份接口返回最初的数据，一旦赋值之后永远不能修改
+      cacheFlightsData:  {
+        flights: [ ],
+        info: { },
+        options: {}
+      },
 
       pageIndex: 1, // 当前页数
       pageSize: 5, // 当前页面的条数
@@ -76,9 +85,14 @@ export default {
       method: "GET",
       params: this.$route.query
     }).then(res => {
-      this.flightsData = res.data;
-      // 总条数
-      this.total = this.flightsData.flights.length;
+        // 大数据
+        this.flightsData = res.data;
+
+        //  和上面的值是一样的，只不过一旦被赋值之后，不能被修改
+        this.cacheFlightsData =  { ...res.data};
+
+        // 总条数
+        this.total = this.flightsData.flights.length;
     });
   },
 
@@ -92,6 +106,12 @@ export default {
     handleCurrentChange(value) {
       this.pageIndex = value;
     },
+
+    // 传递给子组件，用于修改dataList
+    changeDataList( arr ){
+        this.flightsData.flights = arr;
+    }
+
   }
 };
 </script>
