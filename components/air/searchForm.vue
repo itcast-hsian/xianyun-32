@@ -247,11 +247,16 @@ export default {
             }
 
             // 把搜索记录保存到本地
-            const aris = JSON.parse( localStorage.getItem("airs") || `[]`)
+            const airs = JSON.parse( localStorage.getItem("airs") || `[]`)
 
-            aris.unshift( this.form );
+            airs.unshift( this.form );
 
-            localStorage.setItem( 'airs',  JSON.stringify( aris ) );
+            // 本地存储限制在5个之内
+            if(airs.length > 5){
+                airs.length = 5;
+            }
+
+            localStorage.setItem( 'airs',  JSON.stringify( airs ) );
 
         }
     },
