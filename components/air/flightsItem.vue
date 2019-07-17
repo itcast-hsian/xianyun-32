@@ -80,11 +80,11 @@ export default {
         }
     },
 
-    watch: {
-        $route(){
-            console.log(this.$route)
-        }
-    },
+    // watch: {
+    //     $route(){
+    //         console.log(this.$route)
+    //     }
+    // },
 
     // computed和watch怎么用？ 有什么区别？
 
