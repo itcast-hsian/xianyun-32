@@ -59,7 +59,25 @@ export default {
 
     computed: {
         rankTime(){
-            return 123;
+            // 如果没有值先return一个空的字符串
+            if(!this.data.arr_time) return "";
+
+            // 接口返回数据后计算时间
+            const arr = this.data.arr_time.split(":"); // arr[0] 是小时 。arr[]1]是分钟 
+            const dep = this.data.dep_time.split(":");
+
+            if( dep[0] > arr[0] ) {
+                arr[0] += 24;
+            }
+
+            const end = arr[0] * 60 + +arr[1];
+            const start = dep[0] * 60 + +dep[1];
+
+            const dis = end - start;
+            const hours = Math.floor(dis / 60);
+            const min = dis % 60;
+
+            return `${hours}小时${min}分钟`
         }
     },
 }
