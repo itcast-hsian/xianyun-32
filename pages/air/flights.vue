@@ -71,6 +71,7 @@ export default {
   computed: {
       // 当前页面渲染的列表数据
       dataList(){
+          
           return this.flightsData.flights.slice(
               (this.pageIndex - 1) * this.pageSize,
               this.pageSize * this.pageIndex
@@ -130,6 +131,8 @@ export default {
     // 传递给子组件，用于修改dataList
     changeDataList( arr ){
         this.flightsData.flights = arr;
+        this.total = this.flightsData.flights.length;
+        this.pageIndex = 1;
     }
   }
 };

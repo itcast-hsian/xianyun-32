@@ -5,19 +5,19 @@
             <OrderForm/>
 
             <!-- 侧边栏 -->
-            <div class="aside">
-                          
-            </div>
+            <OrderAside/>
         </el-row>
     </div>
 </template>
 
 <script>
 import OrderForm from "@/components/air/orderForm.vue";
+import OrderAside from "@/components/air/OrderAside.vue";
 
 export default {
      components: {
-        OrderForm
+        OrderForm,
+        OrderAside
     }
 }
 </script>

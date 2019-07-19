@@ -102,11 +102,15 @@ export default {
 
         // 选择出发时间时候触发
         handleFlightTimes(value){
+
            const [ from, to ] = value.split(",");
            
            const arr = this.data.flights.filter(v => {
+
                const [ start ] = v.dep_time.split(":");
-                return  from <= start &&  start < to;
+               // 20,是否在0 - 6之间
+
+                return  +from <= +start &&  +start < +to;
             })
 
             this.$emit("changeDataList",  arr);

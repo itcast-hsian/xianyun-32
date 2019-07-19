@@ -66,7 +66,10 @@ export default {
                     // 调用actions的方法进行登录,
                     // dispatch调用actions下方法
                     this.$store.dispatch("user/login", this.form).then(res => {
-                        this.$router.push("/")
+                        // this.$router.push("/")
+                        
+                        // 返回上一页
+                        this.$router.back();
                     });
                 }
             })
