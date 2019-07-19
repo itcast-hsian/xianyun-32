@@ -231,6 +231,12 @@ export default {
             const {data} = res;
             // 机票的信息
             this.infoData = data;
+
+            // 返回给父组件
+            //this.$emit("setInfoData",  data)
+
+            // 保存给store
+            this.$store.commit("air/setInfoData", data);
         })
     }
 }
