@@ -12,8 +12,10 @@
                 align="middle"
                 class="pay-qrcode">
                     <div class="qrcode">
-                        <!-- 二维码 -->
+
+                        <!-- 二维码生成位置 -->
                         <canvas id="qrcode-stage"></canvas>
+
                         <p>请使用微信扫一扫</p>
                         <p>扫描二维码支付</p>
                     </div>
@@ -27,8 +29,48 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers';
+
+// 生成二维码的包
+import QRCode from "qrcode";
+import { setInterval } from 'timers';
+
+var timer = null;
+
 export default {
+    data(){
+        return {
+            timer: null
+        }
+    },
+
+    methods: {
+        // 检测付款状态
+        isPay( data ){
+            return this.$axios({
+                url: "/airorders/checkpay",
+                method: "POST",
+                data: {
+                    id: data.id,
+                    nonce_str: data.price,
+                    out_trade_no: data.orderNo
+                },
+                //  添加授权的头信息
+                headers: {
+                    // 下面请求头信息不是通用的，针对当前的项目的（基于JWT token标准）
+                    Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+                }
+            }).then(res => {
+                
+                const {statusTxt} = res.data;
+
+                if(statusTxt === "支付完成"){
+                     return true; 
+                }else{
+                    return false;
+                }               
+            })
+        }
+    },
 
     mounted(){
         const {id} = this.$route.query;
@@ -43,7 +85,31 @@ export default {
                     Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
                 }
             } ).then(res => {
-                console.log(res.data)
+                
+                // 付款链接
+                const { code_url } = res.data.payInfo;
+
+                // 插件要求的canvas标签
+                var canvas = document.getElementById('qrcode-stage');
+
+                // 生成二维码到canvas
+                QRCode.toCanvas(canvas,  code_url);
+
+                // 调用付款状态的查询
+                timer = setInterval(async () => {
+
+                   const pay = await this.isPay(res.data);
+
+                  
+
+                   if(pay){
+                        console.log(timer )
+                       clearInterval( timer );
+                       return;
+                   }
+
+                }, 3000);
+                
             })
         }, 10) 
     }

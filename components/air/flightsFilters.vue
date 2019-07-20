@@ -91,6 +91,7 @@ export default {
     },
 
     methods: {
+
         // 选择机场时候触发
         handleAirport(value){
             const arr = this.data.flights.filter(v => {
