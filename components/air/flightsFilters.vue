@@ -78,7 +78,7 @@ export default {
                 { type: "大", size: "L" },
                 { type: "中", size: "M"},
                 { type: "小", size: "S" }
-            ]
+            ],
         }
     },
 
