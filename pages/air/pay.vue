@@ -32,9 +32,6 @@
 
 // 生成二维码的包
 import QRCode from "qrcode";
-import { setInterval } from 'timers';
-
-var timer = null;
 
 export default {
     data(){
@@ -74,7 +71,7 @@ export default {
 
     mounted(){
         const {id} = this.$route.query;
-        
+
         setTimeout(() => {
             // GET请求
             this.$axios( {
@@ -96,20 +93,15 @@ export default {
                 QRCode.toCanvas(canvas,  code_url);
 
                 // 调用付款状态的查询
-                timer = setInterval(async () => {
-
+                this.timer = setInterval(async () => {
                    const pay = await this.isPay(res.data);
-
-                  
-
                    if(pay){
-                        console.log(timer )
-                       clearInterval( timer );
+                       this.$message.success("订单支付完成");
+                       
+                       clearInterval( this.timer );
                        return;
                    }
-
                 }, 3000);
-                
             })
         }, 10) 
     }
