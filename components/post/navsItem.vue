@@ -3,6 +3,7 @@
         <div v-for="(item, index) in  data" :key="index">
             {{ item.title }}
 
+            <!-- 自己调用自己 -->
             <NavsItem :data="item.children" />
         </div>
     </div>
@@ -20,6 +21,4 @@ export default {
     .div  div{
         margin-left:20px;
     }
-
-    
 </style>
