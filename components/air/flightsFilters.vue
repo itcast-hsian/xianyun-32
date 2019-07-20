@@ -115,10 +115,8 @@ export default {
                         pass = false
                     }
                 } )
-
                 return pass;
              })
-
              return arr;
         },
 
